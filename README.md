@@ -1,6 +1,9 @@
 airsoft-domination
 ==================
 
+![Prototype of airsoft-domination box](http://i.imgur.com/dNrytCP)
+
+
 In combat pursuit sports, there is a game called Domination a.k.a. Flag Control, which is where two teams battle over control of an area.
 
 This Arduino sketch is the brain for a little box with some neopixels and a buzzer that sits in the center of the field. Once the game starts, both teams try to get to the box and click the button to toggle between team colors. The box shows red if red team controls the area, or blue if blue team controls the area.
