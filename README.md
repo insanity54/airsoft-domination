@@ -1,7 +1,7 @@
 airsoft-domination
 ==================
 
-![Prototype of airsoft-domination box](http://i.imgur.com/dNrytCP)
+![Prototype of airsoft-domination box](https://raw.githubusercontent.com/insanity54/airsoft-domination/master/img/prototype.jpg)
 
 
 In combat pursuit sports, there is a game called Domination a.k.a. Flag Control, which is where two teams battle over control of an area.
