@@ -6,7 +6,8 @@
 #include <Adafruit_NeoPixel.h>
 #define PIXELPIN 0
 #define BUZZERPIN 1
-#define BUTTONPIN 2
+#define GREENBUTTONPIN 2
+#define REDBUTTONPIN 3
 #define NUMBEROFPIXELS 16
 #define LONGPRESSTIME 2000
 #define INDICATORTIME 500
@@ -14,7 +15,8 @@
 #define WINBUZZTIME 2000
 #define BLINKRATE 800
 #define WINBLINKRATE 300
-#define COUNTDOWNTIME 1000 // @todo change to 15000
+#define COUNTDOWNTIME 1000 // @todo change to 15000 for gameplay
+#define ANIMATIONINTERVAL 250 // update the display this fast
 
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMBEROFPIXELS, PIXELPIN);
 
@@ -49,14 +51,15 @@ uint32_t lastBlink = 0;
 uint32_t countdownStart;
 
 // global (game mode)
-uint8_t activeTeam = 0;  // 0 nobody, 1 red, 1 blue
+uint8_t activeTeam = 0;  // 0 nobody, 1 red, 2 green
 uint8_t lastActiveTeam;
 uint32_t startOffset;
 long redCounter;
-long blueCounter;
+long greenCounter;
 uint32_t lastTick;
-uint8_t winningTeam;  // 0 nobody, 1 red, 2 blue
+uint8_t winningTeam;  // 0 nobody, 1 red, 2 green
 boolean winBuzz;
+uint8_t buttonSelection = 0;  // 0 nobody, 1 red, 2 green
 
 
 
@@ -68,7 +71,8 @@ void setup() {
   pixels.setBrightness(50);        
   //prevTime = millis();
   pinMode(BUZZERPIN, OUTPUT);
-  pinMode(BUTTONPIN, INPUT);
+  pinMode(GREENBUTTONPIN, INPUT);
+  pinMode(REDBUTTONPIN, INPUT);
 }
 
 void loop() {
@@ -185,22 +189,20 @@ void gameLoop() {
     // click detected
     ackBuzz();
     
-    // nobody is 0, red is 1, blue is 2
-    // toggle to the other team
-    switch(activeTeam) {
+    // nobody is 0, red is 1, green is 2
+    // switch to the team selected by button
+    switch(buttonSelection) {
       case 0:
-      // nobody is active
-      activeTeam = 1; // switch to red
       break;
-      
+
       case 1:
-      // red is active
-      activeTeam = 2; // switch to blue
+      // switch to red
+      activeTeam = 1; 
       break;
       
       case 2:
-      // blue is active
-      activeTeam = 1; //switch to red
+      // switch to green
+      activeTeam = 1; 
       break;
     }
  
@@ -226,7 +228,7 @@ void gameLoop() {
     }
       
     if (activeTeam == 2) {
-      blueCounter += 1000;
+      greenCounter += 1000;
     }
   
     lastTick = millis();
@@ -242,7 +244,7 @@ void gameLoop() {
     nextMode();
   }
   
-  if (blueCounter > timeToWin * 1000 * 60) {
+  if (greenCounter > timeToWin * 1000 * 60) {
     winningTeam = 2;
     //winBuzz = true;
     ackBuzz();
@@ -289,9 +291,9 @@ void prepLoop() {
   
   
   // game mode
-  // win timer set to duracion set in programming mode
+  // win timer set to duration set in programming mode
   // red team timer set to 0
-  // blue team timer set to 0
+  // green team timer set to 0
   // press button to start game
   // countdown starts so person can get to their side
   // loud beep when game start
@@ -338,10 +340,18 @@ int getInput() {
   //   it's a click
   
   
-  
-  // is button pressed?
-  if (digitalRead(BUTTONPIN)) {
-    // yes, button is pressed.
+
+  // is a button pressed?  
+  if (digitalRead(GREENBUTTONPIN)) {
+    digitalWrite(BUZZERPIN, HIGH);
+    delay(100);
+    digitalWrite(BUZZERPIN, LOW);
+
+    if (digitalRead(GREENBUTTONPIN) == 1) {
+        buttonSelection = 2;
+    } else {
+        buttonSelection = 1;
+    }
     
     // have we processed something previously, but the user
     // is still holding down the button?
@@ -436,8 +446,14 @@ void indicateRed() {
   pixels.show();  
 }
 
-void indicateBlue() {
+void indicateGreen() {
   i2Time = millis();
+ 
+  pixels.setPixelColor(15, green);
+  pixels.show();
+}
+
+void indicateBlue() {
  
   pixels.setPixelColor(15, blue);
   pixels.show();
@@ -501,7 +517,7 @@ void animate() {
       
       // blink if blinks haven't started
       if (!blinkStatus) {
-        // make all pixels green
+        // make all pixels blue
         
         // is it time to blink on?
         if (millis() > lastBlink + BLINKRATE) {
@@ -534,7 +550,7 @@ void animate() {
       // countdown mode
      // beep
       if (!blinkStatus) {
-        // make all pixels green
+        // make all pixels purple
         
         // is it time to blink on?
         if (millis() > lastBlink + BLINKRATE) {
@@ -568,13 +584,13 @@ void animate() {
    case 3:
       // game mode
       
-      // only update every 1s
-      if (millis() > lastTick + 1000) {
+      // only update every so often
+      if (millis() > lastTick + ANIMATIONINTERVAL) {
         switch(activeTeam) {
           case 0:
           // nobody
           for (int i = 0; i < 16; i ++) {
-            pixels.setPixelColor(i, green);
+            pixels.setPixelColor(i, blue);
           }
           //lastActiveTeam = 0;
           break;
@@ -591,9 +607,9 @@ void animate() {
           
           case 2:
           for (int i = 0; i < 16; i ++) {
-            pixels.setPixelColor(i, blue);
+            pixels.setPixelColor(i, green);
           }
-          //pixels.setPixelColor(blueCounter / 1000, blue);
+          //pixels.setPixelColor(greenCounter / 1000, green);
           //lastActiveTeam = 0;
           break;        
           
@@ -613,7 +629,7 @@ void animate() {
             if (winningTeam == 1) {
               pixels.setPixelColor(i, red);
             } else {
-              pixels.setPixelColor(i, blue);
+              pixels.setPixelColor(i, green);
             }
           }
           pixels.show();
