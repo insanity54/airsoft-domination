@@ -46,3 +46,7 @@ Since this design only uses one pushbutton, you have two choices of input- *long
 ###End mode (beeps on and off and winning team's color flashes)
 * A team has won! GG.
 
+
+## Credits
+
+Adafruit Fritzing Parts https://github.com/adafruit/Fritzing-Library (CC BY-SA 3.0)
