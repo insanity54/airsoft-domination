@@ -8,6 +8,11 @@ In combat pursuit sports, there is a game called Domination a.k.a. Flag Control,
 
 This Arduino sketch is the brain for a little box with some neopixels and a buzzer that sits in the center of the field. Once the game starts, both teams try to get to the box and click the button to toggle between team colors. The box shows red if red team controls the area, or blue if blue team controls the area.
 
+
+## WARNING
+
+This code is VERY buggy. In it's current form, I do not recommend using this project for airsoft games.
+
 Operation
 =========
 
