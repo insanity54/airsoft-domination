@@ -47,6 +47,10 @@ Since this design only uses one pushbutton, you have two choices of input- *long
 * A team has won! GG.
 
 
+## Schematic
+
+![Arduino wiring shematic for airsoft-domination](https://raw.githubusercontent.com/insanity54/airsoft-domination/master/schematic/airsoft-domination-onebutton-schematic_bb.png)
+
 ## Credits
 
 Adafruit Fritzing Parts https://github.com/adafruit/Fritzing-Library (CC BY-SA 3.0)
