@@ -1,5 +1,10 @@
 /**
   night game airsfoft king of the hill
+
+  Known bugs
+    * When button is pressed, sometimes controlling team does not switch.
+    * When in game mode, the display will revert to programming mode
+    * When in game mode, the timer will expire faster than the programmed time and end the game
 **/
 
 #include <avr/power.h> // fix for trinket
@@ -312,10 +317,6 @@ void nextMode() {
   if (mode != 4) {
     // if we're not at the last mode (game), go to the next mode
     mode ++;
-    
-  } else {
-    // we're at the last mode so go to the first
-    mode = 0;
   }
   
 }
@@ -490,7 +491,7 @@ void animate() {
           pixels.setPixelColor(i, yellow);        
         }
         pixels.show();
-        lastTtw = timeToWin;     
+        lastTtw = timeToWin;
       }
       
       break;
